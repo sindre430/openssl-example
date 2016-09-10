@@ -1,5 +1,6 @@
 #include <openssl/evp.h>
 #include <openssl/sha.h>
+#include <openssl/md5.h>
 #include <sstream>
 #include <iomanip>
 #include <string>
@@ -22,7 +23,11 @@ public:
 
   /// Return the MD5 (128-bit) hash from input.
   static std::string md5(const std::string &input, size_t iterations = 1) {
-    throw std::logic_error("not yet implemented");
+    std::string hash;
+    hash.resize(128/8);
+    MD5((const unsigned char *)input.c_str(), input.size(), (unsigned char *)hash.c_str());
+    
+    return hash;
   }
 
   /// Return the SHA-1 (160-bit) hash from input.
@@ -39,12 +44,20 @@ public:
 
   /// Return the SHA-256 (256-bit) hash from input.
   static std::string sha256(const std::string &input, size_t iterations = 1) {
-    throw std::logic_error("not yet implemented");
+    std::string hash;
+    hash.resize(256/8);
+    SHA256((const unsigned char *)input.c_str(), input.size(), (unsigned char *)hash.c_str());
+    
+    return hash;
   }
 
   /// Return the SHA-512 (512-bit) hash from input.
   static std::string sha512(const std::string &input, size_t iterations = 1) {
-    throw std::logic_error("not yet implemented");
+    std::string hash;
+    hash.resize(512/8);
+    SHA512((const unsigned char *)input.c_str(), input.size(), (unsigned char *)hash.c_str());
+    
+    return hash;
   }
 
   /// Return key from the Password-Based Key Derivation Function 2 (PBKDF2).

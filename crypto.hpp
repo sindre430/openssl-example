@@ -4,6 +4,9 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
+#include <math.h>
+
+#include <iostream>
 
 // Note: C-style casts, for instance (int), are used to simplify the source code.
 //       C++ casts, such as static_cast and reinterpret_cast, should otherwise
@@ -70,5 +73,155 @@ public:
     if (!success)
       throw std::runtime_error("openssl: error calling PBKCS5_PBKDF2_HMAC_SHA1");
     return key;
+  }
+  
+  /// Return key from the Password-Based Key Derivation Function 2 (PBKDF2).
+   static std::string pbkdf22(const std::string &password, const std::string &salt, int iterations , int key_length) {
+     std::string key;
+     key.resize(key_length);
+     auto success = PKCS5_PBKDF2_HMAC_SHA1(password.c_str(), password.size(),
+                                           (const unsigned char *)salt.c_str(), salt.size(), iterations,
+                                           key_length, (unsigned char *)key.c_str());
+     if (!success)
+       throw std::runtime_error("openssl: error calling PBKCS5_PBKDF2_HMAC_SHA1");
+     return key;
+   }
+  
+  /// Returns string with the password matching pdkdf2 hash with given hash and salt
+ /* static std::string pbkdf2Crack(const std::string &key, const std::string &salt, int iterations){
+    const char posChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+   // const char posChars[] = "EFGHIJKLMNOPQWw";
+    int length = 62;
+    //int length = 15;
+    int tries = 0;
+    bool found = false;
+    std::string curString = "";
+    
+    while(!found){
+      curString  ="";
+      int charCount = floor(tries/length);
+      if(charCount < pow(length, 0)) charCount = 1; //1 bok
+      else if (charCount <= pow(length, 1)) charCount = 2; //2 bok
+      else if (charCount <= pow(length, 2)) charCount = 3; //3 bok 
+      else if (charCount <= pow(length, 3)){//4 bok 
+        found = true;
+        break;
+      }
+      
+      if(charCount > 1){
+        int c1 = tries/pow(length, (charCount-1))-1;
+        int c2 = 
+        
+      }
+      
+      if(charCount == 1){
+        curString = std::string(1, posChars[tries]);
+      }
+      else if(charCount == 2){
+        std::string c1 = std::string(1, posChars[(tries/length)-1]);
+        std::string c2 = std::string(1, posChars[tries%length]);
+         curString = c1+c2;
+      }
+      if (charCount == 3){
+        int mid = (floor((tries-length*length)/length)-1);
+        std::string c1 = std::string(1, posChars[(tries/(length*length)-1)]);
+        std::string c2 = std::string(1, posChars[mid%length]);
+        std::string c3 = std::string(1, posChars[tries%length]);
+        
+        curString = c1+c2+c3;
+
+      }
+      
+      std::string cKey;
+      cKey.resize(128/8);
+      auto success = PKCS5_PBKDF2_HMAC_SHA1(curString.c_str(), curString.size(),
+                                            (const unsigned char *)salt.c_str(), salt.size(), iterations,
+                                            128/8, (unsigned char *)cKey.c_str());
+      if (!success) throw std::runtime_error("openssl: error calling PBKCS5_PBKDF2_HMAC_SHA1");
+      
+      
+      if((cKey == key) == 1){
+        std::cout << curString;
+        found = true;
+      }
+      
+      tries++;
+    }
+   
+    
+    return curString;
+  }*/
+  
+  static std::string pbkdf2Crack(const std::string key, const std::string salt, int iterations, int key_length){
+    const int lowDec = 48; 
+    const int highDec = 122; 
+    int numberOfChar = 1;
+    bool found = false;
+    std::string password = "";
+    
+    while(!found){
+      char curPass[numberOfChar];
+      
+      if(numberOfChar == 1){
+        for(int i=lowDec; i<=highDec; i++){
+          password = "";
+          password += (char)i;
+          
+          if(Crypto::hex(Crypto::pbkdf22(password, salt, iterations, key_length)) == key){
+            return password;
+          }
+          numberOfChar = 2;
+        }
+      }
+        
+        if(numberOfChar == 2){
+          for(int i=lowDec; i<=highDec; i++){
+            for(int j=lowDec; j<=highDec; j++){
+              password = "";
+              
+              curPass[0] = (char)i;
+              curPass[1] = (char)j;
+              
+              for(int o=0; o<numberOfChar; o++){
+                password+=curPass[o];
+              }
+              
+              if(Crypto::hex(Crypto::pbkdf22(curPass, salt, iterations, key_length)) == key){
+                return password;
+              }
+            }
+          }
+          numberOfChar = 3;
+        }
+        
+        if(numberOfChar == 3){
+          for(int i=lowDec; i<=highDec; i++){
+            for(int j=lowDec; j<=highDec; j++){
+              for(int k=lowDec; k<=highDec; k++){
+                password = "";
+                
+                curPass[0] = (char)i;
+                curPass[1] = (char)j;
+                curPass[2] = (char)k;
+                
+                for(int o=0; o<numberOfChar; o++){
+                  password+=curPass[o];
+                }
+                
+            
+                if(Crypto::hex(Crypto::pbkdf22(password, salt, iterations, key_length)) == key){
+                  return password;
+                }
+              }
+            }
+          }
+          found = true;
+          std::cout << "ikke funnet";
+          password = "Not Found";
+        }
+        
+    }
+    return password;
+    
   }
 };

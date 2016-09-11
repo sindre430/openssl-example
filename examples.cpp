@@ -22,4 +22,11 @@ int main() {
    
    cout << "SHA-512 with 1 iteration" << endl;
    cout << Crypto::hex(Crypto::sha512("Test")) << endl << endl;
+   
+   
+   cout << "Cracking PBKDF2 password" << endl;
+   cout << Crypto::pbkdf2Crack("ab29d7b5c589e18b52261ecba1d3a7e7cbf212c6", "Saltet til Ola", 2048, 160/8) << endl << endl;
+   
+   cout << "Checking cracked password" << endl;
+   cout << Crypto::hex(Crypto::pbkdf22("QwE", "Saltet til Ola", 2048, 160/8)) << endl << endl;
 }

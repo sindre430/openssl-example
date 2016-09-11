@@ -20,4 +20,7 @@ int main() {
   
   // Testing SHA-512 with 1 iteration. Result copied from http://abunchofutils.com/u/computing/sha512-hash-calculator/
   assert(Crypto::hex(Crypto::sha512("Test")) == "c6ee9e33cf5c6715a1d148fd73f7318884b41adcb916021e2bc0e800a5c5dd97f5142178f6ae88c8fdd98e1afb0ce4c8d2c54b5f37b30b7da1997bb33b0b8a31");
+  
+  // Testing password for Ola (pbkdf2 algorithm with key:"ab29d7b5c589e18b52261ecba1d3a7e7cbf212c6", salt:"Saltet til Ola", iterations: 2048, key length: 160/8)
+  assert(Crypto::hex(Crypto::pbkdf22("QwE", "Saltet til Ola", 2048, 160/8)) == "ab29d7b5c589e18b52261ecba1d3a7e7cbf212c6");
 }

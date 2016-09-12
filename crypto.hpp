@@ -87,71 +87,6 @@ public:
      return key;
    }
   
-  /// Returns string with the password matching pdkdf2 hash with given hash and salt
- /* static std::string pbkdf2Crack(const std::string &key, const std::string &salt, int iterations){
-    const char posChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-   // const char posChars[] = "EFGHIJKLMNOPQWw";
-    int length = 62;
-    //int length = 15;
-    int tries = 0;
-    bool found = false;
-    std::string curString = "";
-    
-    while(!found){
-      curString  ="";
-      int charCount = floor(tries/length);
-      if(charCount < pow(length, 0)) charCount = 1; //1 bok
-      else if (charCount <= pow(length, 1)) charCount = 2; //2 bok
-      else if (charCount <= pow(length, 2)) charCount = 3; //3 bok 
-      else if (charCount <= pow(length, 3)){//4 bok 
-        found = true;
-        break;
-      }
-      
-      if(charCount > 1){
-        int c1 = tries/pow(length, (charCount-1))-1;
-        int c2 = 
-        
-      }
-      
-      if(charCount == 1){
-        curString = std::string(1, posChars[tries]);
-      }
-      else if(charCount == 2){
-        std::string c1 = std::string(1, posChars[(tries/length)-1]);
-        std::string c2 = std::string(1, posChars[tries%length]);
-         curString = c1+c2;
-      }
-      if (charCount == 3){
-        int mid = (floor((tries-length*length)/length)-1);
-        std::string c1 = std::string(1, posChars[(tries/(length*length)-1)]);
-        std::string c2 = std::string(1, posChars[mid%length]);
-        std::string c3 = std::string(1, posChars[tries%length]);
-        
-        curString = c1+c2+c3;
-
-      }
-      
-      std::string cKey;
-      cKey.resize(128/8);
-      auto success = PKCS5_PBKDF2_HMAC_SHA1(curString.c_str(), curString.size(),
-                                            (const unsigned char *)salt.c_str(), salt.size(), iterations,
-                                            128/8, (unsigned char *)cKey.c_str());
-      if (!success) throw std::runtime_error("openssl: error calling PBKCS5_PBKDF2_HMAC_SHA1");
-      
-      
-      if((cKey == key) == 1){
-        std::cout << curString;
-        found = true;
-      }
-      
-      tries++;
-    }
-   
-    
-    return curString;
-  }*/
-  
   static std::string pbkdf2Crack(const std::string key, const std::string salt, int iterations, int key_length){
     const int lowDec = 48; 
     const int highDec = 122; 
@@ -216,7 +151,6 @@ public:
             }
           }
           found = true;
-          std::cout << "ikke funnet";
           password = "Not Found";
         }
         
